@@ -10,8 +10,8 @@ class Orbit(tk.Frame):
         self.options = tk.Frame(self, height=self.height)
         tk.Label(self.options, text="Press RETURN to confirm a value.").pack()
 
-        self.options.grid(row=0, column=1, sticky="nsew")
-        self.canvas.grid(row=0, column=0, sticky="nsew")
+        self.options.grid(row=0, column=1, sticky='nsew')
+        self.canvas.grid(row=0, column=0, sticky='nsew')
         
         # I plan to eventually put window size configs (hence the computations for core object size)
         self.sun = self.canvas.create_oval((self.width/2)-10, (self.height/2)+10,
@@ -32,7 +32,6 @@ class Orbit(tk.Frame):
             self.item = self.canvas.find_overlapping(event.x-1, event.y+1, event.x+1, event.y-1)[0]
         except IndexError:  # For when there is no self.item in the click zone
             self.item = 0  # Overall options for the sim (maybe save/load)
-        
         try:
             for frame in self.option_frames:  # Clearing option frames
                 frame.pack_forget()
@@ -42,31 +41,28 @@ class Orbit(tk.Frame):
         except AttributeError:
             pass  # The first run won't have these variables in place
         self.option_frames = []  # Resetting variables
-        self.option_items = {}
-            
+        self.option_items = []
         if self.item == 0:
             option_set = self.base_options  # Sets which set of options to use
         else:
             option_set = self.item_options
-            
         count = 0
         for option in option_set:  # Parses through option data
             self.option_frames.append(tk.Frame(self.options))
             self.option_frames[count].pack()
-            self.option_items[tk.Label(self.option_frames[count], text=option[0])] =
-                tk.Entry(self.option_frames[count])
+            self.option_items.append((tk.Label(self.option_frames[count], text=option[0]),
+                tk.Entry(self.option_frames[count])))
             self.option_items[count][0].pack(side=tk.LEFT)
             self.option_items[count][1].bind('<Return>', self.update)
             self.option_items[count][1].insert(0, option[1])
             self.option_items[count][1].pack(side=tk.RIGHT)
             count += 1
-            
-        """FIX THIS"""
         
     def update(self, event):  # Updates the option of an element
-        index = self.option_items.index(event)
-        option = self.option_items[index]
-        #self.item[str(option[0].cget'text')] = float(option[1].get('1.0', 'end-1c'))
+        for item in self.option_items:  # Finds the tuple containing the triggering widget
+            if item[0] == event:
+                option = item
+        self.item[str(option[0].cget('text'))] = float(option[1].get('1.0', 'end-1c'))
         print option
         
 if __name__ == '__main__':
