@@ -54,7 +54,7 @@ class Orbit(tk.Frame):
                 tk.Entry(self.option_frames[count])))
             self.option_items[count][0].pack(side=tk.LEFT)
             self.option_items[count][1].bind('<Return>', self.update)
-            self.option_items[count][1].insert(0, option[1])
+            self.option_items[count][1].insert(0, self.item[option[0].cget('text')])
             self.option_items[count][1].pack(side=tk.RIGHT)
             count += 1
         
@@ -62,7 +62,7 @@ class Orbit(tk.Frame):
         for item in self.option_items:  # Finds the tuple containing the triggering widget
             if item[0] == event:
                 option = item
-        self.item[str(option[0].cget('text'))] = float(option[1].get('1.0', 'end-1c'))
+        self.item[option[0].cget('text')] = float(option[1].get('1.0', 'end-1c'))
         print option
         
 if __name__ == '__main__':
