@@ -25,7 +25,7 @@ class Orbit(tk.Frame):
 
         self.canvas.bind('<ButtonRelease-1>', self.select)
 
-        self.base_options = ["Scale:", "Test 2:"]
+        self.base_options = {"Scale (1 px  = x ls):":50, "Test 2:":42}
 
         self.item_options = ["Apoapsis:", "Periapsis:", "Arg. of Periapsis:"]
 
@@ -42,34 +42,36 @@ class Orbit(tk.Frame):
             periaps = random.randint(1, apoaps)
         focus_displacement = (apoaps + periaps) / 2
         self.bodies[self.canvas.create_line(orbitmath.poly_oval())] = [apoaps, periaps, argp]
-        pass
 
     def select(self, event):
         try:
             self.item = self.canvas.find_overlapping(event.x - 1, event.y + 1, event.x + 1, event.y - 1)[0]
         except IndexError:  # For when there is no self.item in the click zone
-            pass  # Overall options for the sim (maybe save/load)
+            pass
         try:
             for frame in self.option_frames:  # Clearing option frames
                 frame.pack_forget()
             for option_pair in self.option_items:
                 option_pair[0].pack_forget()
                 option_pair[1].pack_forget()
+                option_pair[1].delete(0, tk.END)
         except AttributeError:
             pass  # The first run won't have these variables in place
-        if self.item == 0:
-            option_set = self.base_options  # Sets which set of options to use
+        if self.item == 0 or self.item == 1:  # Overall options for the sim (maybe save/load???)
+            option_labels = self.base_options.keys()
+            option_entries = self.base_options.values()
         else:
-            option_set = self.item_options
+            option_labels = self.item_options
+            option_entries = self.bodies[self.item]
         count = 0
-        for option in option_set:  # Parses through option data
+        for option in option_labels:  # Parses through option data
             self.option_frames.append(tk.Frame(self.options))
             self.option_frames[count].pack()
             self.option_items.append((tk.Label(self.option_frames[count], text=option),
                                       tk.Entry(self.option_frames[count])))
             self.option_items[count][0].pack(side=tk.LEFT)
             self.option_items[count][1].bind('<Return>', self.param_update)
-            self.option_items[count][1].insert(0, self.item[self.option_items[count][0].cget('text')])
+            self.option_items[count][1].insert(0, str(option_entries[count]))
             self.option_items[count][1].pack(side=tk.RIGHT)
             count += 1
 
