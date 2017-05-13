@@ -13,7 +13,7 @@ class Orbit(tk.Frame):
         self.canvas = tk.Canvas(self, width=self.width, height=self.height, background='black')
         self.options = tk.Frame(self, height=self.height)
         tk.Label(self.options,
-                 text="Confirm value: Return.\nUnits: Light Seconds.\n1 Pixel = %s Light Seconds." % self.scale).pack()
+                 text="Press Enter to Confirm.\nUnits: Light Seconds.\n1 Pixel = %s Light Seconds." % self.scale).pack()
 
         self.options.grid(row=0, column=1, sticky='nsew')
         self.canvas.grid(row=0, column=0, sticky='nsew')
@@ -25,7 +25,7 @@ class Orbit(tk.Frame):
 
         self.canvas.bind('<ButtonRelease-1>', self.select)
 
-        self.base_options = {"Scale (1 px  = x ls):":50, "Test 2:":42}
+        self.base_options = {"Scale:":50, "Test 2:":42}
 
         self.item_options = ["Apoapsis:", "Periapsis:", "Arg. of Periapsis:"]
 
@@ -77,10 +77,13 @@ class Orbit(tk.Frame):
 
     def param_update(self, event):  # Updates the option of an element
         for item in self.option_items:  # Finds the tuple containing the triggering widget
-            if item[0] == event:
+            if item[1] == event.widget:
                 option = item
-        self.item[option[0].cget('text')] = float(option[1].get('1.0', 'end-1c'))
-
+        if self.item == 0 or self.item == 1:
+            self.base_options[option[0].cget('text')] = int(option[1].get())
+        else:
+            pass#self.bodies[self.item] [option[0].cget('text')] = int(option[1].get('1.0', 'end-1c'))
+            
 
 if __name__ == '__main__':
     root = tk.Tk()
