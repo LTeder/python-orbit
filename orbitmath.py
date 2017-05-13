@@ -37,3 +37,10 @@ def poly_oval(x0,y0, x1,y1, steps=20, rotation=0):  # Credit to Stephen D Evans 
         point_list.append(round(y + yc))
 
     return point_list
+    
+def specific_ang_momentum(apoaps, periaps, parentmass):
+    # Need to convert to meters
+    semimajor = (apoaps + periaps) / 2
+    eccentricity = (apoaps - periaps) / semimajor
+    specific_ang_momentum = (semimajor * (0.0000000000667408 * parentmass) * (1 - eccentricity)**2)**0.5
+    return specific_ang_momentum
