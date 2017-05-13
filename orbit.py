@@ -9,7 +9,7 @@ class Orbit(tk.Frame):
         self.width = 500
         self.height = 500
         self.scale = 50
-        self.large = self.scale * [self.width if self.width > self.height else self.height]
+        self.max = [self.width if self.width < self.height else self.height]
         self.canvas = tk.Canvas(self, width=self.width, height=self.height, background='black')
         self.options = tk.Frame(self, height=self.height)
         tk.Label(self.options,
@@ -20,8 +20,8 @@ class Orbit(tk.Frame):
 
         # I plan to eventually put window size configs (hence the computations for core object size)
         self.bodies = {}
-        self.sun = self.canvas.create_oval((self.width / 2) - 10, (self.height / 2) + 10,
-                                           (self.width / 2) + 10, (self.height / 2) - 10, fill='yellow')
+        self.sun = self.canvas.create_oval((self.width / 2) - 10, (self.height / 2) - 10,
+                                           (self.width / 2) + 10, (self.height / 2) + 10, fill='yellow')
 
         self.canvas.bind('<ButtonRelease-1>', self.select)
 
@@ -37,10 +37,13 @@ class Orbit(tk.Frame):
     def spawn_item(self, apoaps=None, periaps=None,
                    argp=random.randint(0, 359)):  # Creates the canvas item, ellipse, and dictionary for each item
         if apoaps is None:
-            apoaps = random.randint(2, self.large)
+            apoaps = random.randint(2, self.max)
         if periaps is None:
             periaps = random.randint(1, apoaps)
-        focus_displacement = (apoaps + periaps) / 2
+        if periaps > apoaps:  # Swaps variables if periaps is greater than apoaps
+            temp = periaps
+            periaps = apoaps
+            apoaps = temp
         self.bodies[self.canvas.create_line(orbitmath.poly_oval())] = [apoaps, periaps, argp]
 
     def select(self, event):
@@ -80,9 +83,9 @@ class Orbit(tk.Frame):
             if item[1] == event.widget:
                 option = item
         if self.item == 0 or self.item == 1:
-            self.base_options[option[0].cget('text')] = int(option[1].get())
+            self.base_options[option[0].cget('text')] = float(option[1].get())
         else:
-            pass#self.bodies[self.item] [option[0].cget('text')] = int(option[1].get('1.0', 'end-1c'))
+            pass#self.bodies[self.item] [option[0].cget('text')] = float(option[1].get('1.0', 'end-1c'))
             
 
 if __name__ == '__main__':
